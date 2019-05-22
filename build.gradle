@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'com.itgo'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation('com.google.code.gson:gson:2.8.5')
+    implementation('mysql:mysql-connector-java:5.1.47')
+    implementation('commons-codec:commons-codec:1.12')
+}
