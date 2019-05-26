@@ -1,14 +1,6 @@
 package test;
 
-
-import com.itgo.util.CastUtil;
-import com.itgo.util.encrypt.EncryptAESUtil;
-import com.itgo.util.encrypt.EncryptDESUtil;
-import com.itgo.util.encrypt.EncryptRSAUtil;
-import javafx.util.converter.BigIntegerStringConverter;
-
-import java.math.BigInteger;
-import java.util.Map;
+import com.itgo.util.redis.RedisUtil;
 
 /**
  * Create by xb
@@ -90,8 +82,10 @@ public class Test {
 //        System.out.println(jsonData2);
 //        System.out.println(encrypt);
 //        System.out.println(EncryptDESUtil.encrypt(encrypt,key));
-
-
-
+        RedisUtil.init("db.properties");
+        RedisUtil redisInstance = RedisUtil.getRedisInstance();
+        RedisUtil.Strings strings   = redisInstance.new Strings();
+        strings.set("xgxb","何明喜");
+        System.out.println(strings.get("xgxb"));
     }
 }

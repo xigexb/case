@@ -5,8 +5,11 @@ import com.itgo.annotation.BeanField;
 import com.itgo.annotation.BeanMeta;
 import com.itgo.bean.DataBean;
 import com.itgo.enums.JDBCExecutionType;
+import com.itgo.exception.JDBCInitializationException;
 import com.itgo.exception.NoSuchAnnotationException;
 import com.itgo.util.PropertiesUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -25,7 +28,7 @@ import java.util.Properties;
  */
 public class JDBCUtil {
 
-
+    private static  final Logger logger = LoggerFactory.getLogger(JDBCUtil.class);
     /**
      * 数据库连接驱动
      */
@@ -49,11 +52,28 @@ public class JDBCUtil {
     private static String password;
 
 
-    /**
-     * 使用静态代码块，加载数据库一些连接配置信息
-     */
-    static {
-        Properties properties = PropertiesUtil.loadProps("db.properties");
+//    /**
+//     * 使用静态代码块，加载数据库一些连接配置信息
+//     */
+//    static {
+//        Properties properties = PropertiesUtil.loadProps("db.properties");
+//        driver = PropertiesUtil.getString(properties, "driver");
+//        url = PropertiesUtil.getString(properties, "url");
+//        userName = PropertiesUtil.getString(properties, "userName");
+//        password = PropertiesUtil.getString(properties, "password");
+//        //加载jar文件中的驱动类
+//        try {
+//            Class.forName(driver);
+//            logger.info("initialization jdbc config file{} success",);
+//        } catch (ClassNotFoundException e) {
+//            logger.info("initialization jdbc config file{} failure");
+//            e.printStackTrace();
+//        }
+//    }
+
+
+    public static void init(String configPath){
+        Properties properties = PropertiesUtil.loadProps(configPath);
         driver = PropertiesUtil.getString(properties, "driver");
         url = PropertiesUtil.getString(properties, "url");
         userName = PropertiesUtil.getString(properties, "userName");
@@ -61,7 +81,9 @@ public class JDBCUtil {
         //加载jar文件中的驱动类
         try {
             Class.forName(driver);
+            logger.info("initialization jdbc config file {} success",configPath);
         } catch (ClassNotFoundException e) {
+            logger.info("initialization jdbc config file {} failure",configPath);
             e.printStackTrace();
         }
     }
@@ -74,6 +96,10 @@ public class JDBCUtil {
      */
     public static Connection getConn() {
         try {
+            if(url == null ||"".equals(url) || userName == null ||"".equals(userName) || password == null ||"".equals(password)){
+                logger.error("数据库配置项参数为空，请先调用 init 方法进行数据库配置项初始化:)");
+                throw new JDBCInitializationException("数据库配置项参数为空:)");
+            }
             // DriverManager 数据库驱动管家，可以用它来获取一个数据库连接 参数：连接地址 用户名 密码
             return DriverManager.getConnection(url, userName, password);
         } catch (SQLException e) {
