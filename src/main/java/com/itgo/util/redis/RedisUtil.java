@@ -9,6 +9,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.SortingParams;
 import redis.clients.jedis.util.SafeEncoder;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -46,6 +47,14 @@ public class RedisUtil {
     }
 
     public static void init(String configFilePath) {
+        if(configFilePath == null || "".equals(configFilePath)){
+            try {
+                logger.error("没有找到redis配置文件{}",configFilePath);
+                throw new  FileNotFoundException("not found config file："+configFilePath);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         Properties properties = PropertiesUtil.loadProps(configFilePath);
         String url = PropertiesUtil.getString(properties, "redisUrl");
         Integer port = PropertiesUtil.getInt(properties, "redisPort");
