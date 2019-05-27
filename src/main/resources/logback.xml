@@ -19,7 +19,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- 打印格式化 -->
         <encoder charset="utf-8">
-            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] %.-5level %file:%line- %msg%n</pattern>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t]  [%.-5level] classpath:[%class] method:[%method] location:[%file:%line] =====> %msg %n</pattern>
         </encoder>
     </appender>
 
@@ -28,7 +28,7 @@
     <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder charset="utf-8">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
-            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %.-5level %file:%line- %msg%n</pattern>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t]  [%.-5level] classpath:[%class] method:[%method] location:[%file:%line] =====> %msg %n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
@@ -52,8 +52,7 @@
     <!-- WARN 输入到文件，按日期和文件大小 -->
     <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder charset="utf-8">
-            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %.-5level %file:%line- %msg%n
-            </pattern>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t]  [%.-5level] classpath:[%class] method:[%method] location:[%file:%line] =====> %msg %n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>WARN</level>
@@ -72,8 +71,7 @@
     <!-- INFO 输入到文件，按日期和文件大小 -->
     <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder charset="utf-8">
-            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %.-5level %file:%line- %msg%n
-            </pattern>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t]  [%.-5level] classpath:[%class] method:[%method] location:[%file:%line] =====> %msg %n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
@@ -91,8 +89,7 @@
     <!-- DEBUG 输入到文件，按日期和文件大小 -->
     <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder charset="utf-8">
-            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %.-5level %file:%line- %msg%n
-            </pattern>
+           <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t]  [%.-5level] classpath:[%class] method:[%method] location:[%file:%line] =====> %msg %n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>DEBUG</level>
@@ -111,8 +108,7 @@
     <!-- TRACE 输入到文件，按日期和文件大小 -->
     <appender name="TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder charset="utf-8">
-            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %.-5level %file:%line- %msg%n
-            </pattern>
+            <pattern>[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%t]  [%.-5level] classpath:[%class] method:[%method] location:[%file:%line] =====> %msg %n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>TRACE</level>

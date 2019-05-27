@@ -49,7 +49,7 @@ public class RedisUtil {
     public static void init(String configFilePath) {
         if(configFilePath == null || "".equals(configFilePath)){
             try {
-                logger.error("没有找到redis配置文件{}",configFilePath);
+                logger.error("没有找到redis配置文件路径:{}",configFilePath);
                 throw new  FileNotFoundException("not found config file："+configFilePath);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
