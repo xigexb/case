@@ -17,8 +17,17 @@ dependencies {
     implementation('mysql:mysql-connector-java:5.1.47')
     implementation('commons-codec:commons-codec:1.12')
     implementation('redis.clients:jedis:3.0.1')
+//    log
     implementation('org.slf4j:slf4j-api:1.7.26')
     implementation('ch.qos.logback:logback-classic:1.2.3')
     implementation('ch.qos.logback:logback-core:1.2.3')
+
+//    Apache POI
+    implementation('org.apache.poi:poi:4.1.0')
+    implementation('org.apache.poi:poi-ooxml:4.1.0')
+    implementation('org.apache.poi:poi-ooxml-schemas:4.1.0')
+    implementation('org.apache.poi:poi-scratchpad:4.1.0')
+    implementation('org.apache.poi:poi-excelant:4.1.0')
+    implementation('org.apache.poi:poi-examples:4.1.0')
 
 }
