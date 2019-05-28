@@ -1,10 +1,14 @@
 package com.itgo.util.excel;
 
+import com.itgo.annotation.ExcelField;
 import com.itgo.annotation.IsNeeded;
 import com.itgo.bean.CodeStatus;
 import com.itgo.bean.DataBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -259,8 +263,16 @@ public class ExcelUtil {
                 listData.setMsg("excel没有数据");
                 return listData;
             }
+            Row titleRow = null;
             // 开始循环row
             for (int i = startRow - 1; i <= totalRows-endRow; i++) {
+                /**
+                 * 2019-05-27
+                 * get title  row
+                 */
+                if (titleRow == null) {
+                    titleRow = getRowByIndex(sheetData, 1).getData();
+                }
                 T newInstance = clazz.newInstance();
                 Row row = getRowByIndex(sheetData, i).getData();
                 if (row == null) {
@@ -272,23 +284,27 @@ public class ExcelUtil {
                 Field[] fields = clazz.newInstance().getClass().getDeclaredFields();
                 for (int j = 0; j < totalCells; j++) {
                     fields[j].setAccessible(true);
-                    String fieldName = fields[j].getName();
-                    boolean fieldHasAnno = fields[j].isAnnotationPresent(IsNeeded.class);
+                    boolean fieldHasAnno = fields[j].isAnnotationPresent(ExcelField.class);
                     // 有注解
                     if (fieldHasAnno) {
-                        IsNeeded annotation = fields[j].getAnnotation(IsNeeded.class);
-                        boolean isok = annotation.isNeeded();
+                        ExcelField excelField = fields[j].getAnnotation(ExcelField.class);
+                        boolean isNeed = excelField.isNeed();
                         // Excel需要赋值的列
-                        if (isok) {
-                            DataBean<Object> cellValue = getCellValue(rowData, j);
-                            if(null == cellValue || "".equals(cellValue)){
-                                continue;
-                            }else {
-                                flag = true;
+                        if (isNeed) {
+                            String beanTitle = excelField.value();
+                            for (int k = 0; k <=totalCells; k++) {
+                                Object excelTitle = getCellValue(new DataBean<>(titleRow), k);
+                                if (excelTitle != null && excelTitle.toString().trim().equals(beanTitle.trim())) {
+                                    // 赋值
+                                    Object cellValue = getCellValue(rowData, k);
+                                    if (cellValue != null && !"".equals(cellValue.toString())) {
+                                        flag = true;
+                                        Object converterValue = converterValue(cellValue, fields[j]);
+                                        fields[j].set(newInstance,converterValue);
+                                        break;
+                                    }
+                                }
                             }
-                            Object converterValue = converterValue(cellValue.getData(), fields[j]);
-                            // 赋值
-                            fields[i].set(newInstance,converterValue);
                         }
                     }
                 }
