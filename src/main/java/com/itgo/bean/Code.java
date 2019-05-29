@@ -33,7 +33,17 @@ public enum  Code  implements Serializable{
     HTTP_BAD_GATEWAY(502,"Bad Gateway","错误的网关"),
     HTTP_SERVICE_UNAVAILABLE(503,"Service Unavailable","服务不可用"),
     HTTP_GATEWAY_TIMEOUT(504,"Gateway Timeout","网关超时"),
-    HTTP_NOT_FOUND(404,"not found","路径找不到");
+    HTTP_NOT_FOUND(404,"not found","路径找不到"),
+
+    /**
+     * business code/msg
+     */
+    B_ENTRY(10,"entry","已录入"),
+    B_COMMIT(20,"commit","已提交"),
+    B_CONFIRM(30,"effective","已生效"),
+    B_OBSOLETE(40,"obsolete","已作废"),
+    B_DELETEED(50,"delete","已删除");
+
 
 
     private Integer code;
