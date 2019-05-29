@@ -61,10 +61,8 @@ public class MongoDbUtil {
         public static DB db;
         public static GridFS gridFS;
         public static MongoDatabase database;
-        /**
-         *
-         */
-        public static List<MongoCredential> credential = new ArrayList<>();
+
+        public static MongoCredential credential;
 
         //init mongodb
         static {
@@ -95,9 +93,8 @@ public class MongoDbUtil {
             }
             options = MongoClientOptions.builder().connectTimeout(0)
                     .maxWaitTime(6000).connectionsPerHost(10).build();
-            MongoCredential credential1 = MongoCredential.createCredential(userName,
+             credential = MongoCredential.createCredential(userName,
                     databaseName, password.toCharArray());
-            credential.add(credential1);
         }
 
     }
