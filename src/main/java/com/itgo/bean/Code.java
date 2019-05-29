@@ -42,7 +42,7 @@ public enum  Code  implements Serializable{
     B_COMMIT(20,"commit","已提交"),
     B_CONFIRM(30,"effective","已生效"),
     B_OBSOLETE(40,"obsolete","已作废"),
-    B_DELETEED(50,"delete","已删除");
+    B_DELETE(50,"delete","已删除");
 
 
 
