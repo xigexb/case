@@ -45,11 +45,19 @@ public enum  Code  implements Serializable{
     B_DELETE(50,"delete","已删除");
 
 
-
+    /**
+     * 状态码
+     */
     private Integer code;
 
+    /**
+     * 提示信息
+     */
     private String msg;
 
+    /**
+     * 中文信息
+     */
     private String msgCn;
 
     Code(int code, String msg,String msgCn) {
