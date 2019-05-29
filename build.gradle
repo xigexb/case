@@ -30,4 +30,7 @@ dependencies {
     implementation('org.apache.poi:poi-excelant:4.1.0')
     implementation('org.apache.poi:poi-examples:4.1.0')
 
+//    mongoDB
+    implementation('org.mongodb:mongodb-driver:3.10.2')
+
 }
