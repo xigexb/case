@@ -7,9 +7,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Create by xigexb
@@ -36,9 +34,9 @@ public class ObjectUtil {
                 throw new ObjectNotNullException("form Object must not null");
             }
             //all field
-            Field[] formFields = getAllFields(formObject);
+            Field[] formFields = getFields(formObject);
             T t = tClass.newInstance();
-            Field[] toFields = getAllFields(t);
+            Field[] toFields = getFields(t);
             for (Field formF : formFields) {
                 for (Field toF : toFields) {
                     copyValue(formObject, formF, t, toF);
@@ -66,8 +64,8 @@ public class ObjectUtil {
             if (formObject == null || toObject == null) {
                 throw new ObjectNotNullException("formObject must not null");
             }
-            Field[] formFields = getAllFields(formObject);
-            Field[] toFields = getAllFields(toObject);
+            Field[] formFields = getFields(formObject);
+            Field[] toFields = getFields(toObject);
             for (Field formF : formFields) {
                 for (Field toF : toFields) {
                     copyValue(formObject, formF, toObject, toF);
@@ -102,6 +100,54 @@ public class ObjectUtil {
         }
         return data;
     }
+
+    /**
+     * not ignore null
+     * @param object object
+     * @return
+     */
+    public static Map<String,Object> toMap(Object object){
+        return toMap(object,false);
+    }
+
+    /**
+     * ignore null  true / false
+     * @param object object
+     * @param ignoreNull true / false
+     * @return
+     */
+    public static Map<String,Object> toMap(Object object , Boolean ignoreNull){
+        Map<String,Object> map = null;
+        ignoreNull = ignoreNull == null ? true : false;
+        try {
+            if(object == null){
+                throw new ObjectNotNullException("object must not null");
+            }
+            Field[] fields = getFields(object);
+            for (Field field : fields) {
+                if(field != null){
+                    if(map == null){
+                        map = new HashMap<>();
+                    }
+                    field.setAccessible(true);
+                    Object val = field.get(object);
+                    if(ignoreNull){
+                        if(val != null){
+                            map.put(field.getName(),val);
+                        }
+                    }else {
+                        map.put(field.getName(),val);
+                    }
+                }
+            }
+        }catch (ObjectNotNullException e){
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
 
     /**
      * copy value
@@ -213,7 +259,7 @@ public class ObjectUtil {
      * @param object
      * @return
      */
-    public static Field[] getAllFields(Object object) {
+    public static Field[] getFields(Object object) {
         Class clazz = object.getClass();
         List<Field> fieldList = new ArrayList<>();
         while (clazz != null) {
