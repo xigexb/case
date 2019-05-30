@@ -33,4 +33,14 @@ dependencies {
 //    mongoDB
     implementation('org.mongodb:mongodb-driver:3.10.2')
 
+//    web
+    implementation('javax.servlet:javax.servlet-api:4.0.1')
+
+//   fastJson
+    implementation('com.alibaba:fastjson:1.2.58')
+
+
+
+
+
 }
