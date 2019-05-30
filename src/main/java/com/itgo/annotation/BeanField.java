@@ -18,6 +18,26 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BeanField {
 
+    /**
+     * 值
+     * @return
+     */
     String value() default "null";
+
+    /**
+     * 描述
+     * @return
+     */
     String desc() default "null";
+
+    /**
+     * 属性名称
+     * @return
+     */
+    String property() default "null";
+
+    /**
+     * @return
+     */
+    String pattern() default "null";
 }
