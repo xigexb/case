@@ -1,11 +1,13 @@
-package com.itgo.util;
+package com.itgo.util.bean;
+
+import com.itgo.util.StringUtil;
 
 import java.io.UnsupportedEncodingException;
 
 /**
  * Create by xb
  * The file is [ CastUtil] on [ case ] project
- * The file path is com.itgo.util.CastUtil
+ * The file path is com.itgo.util.bean.CastUtil
  *
  * @versio 1.0.o
  * @Author he ming xi

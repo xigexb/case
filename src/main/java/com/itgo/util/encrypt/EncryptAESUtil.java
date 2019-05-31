@@ -1,6 +1,6 @@
 package com.itgo.util.encrypt;
 
-import com.itgo.util.CastUtil;
+import com.itgo.util.bean.CastUtil;
 import com.itgo.util.StringUtil;
 
 import javax.crypto.*;

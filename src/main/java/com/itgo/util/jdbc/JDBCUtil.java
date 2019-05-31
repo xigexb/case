@@ -7,7 +7,7 @@ import com.itgo.bean.DataBean;
 import com.itgo.enums.JDBCExecutionType;
 import com.itgo.exception.JDBCInitializationException;
 import com.itgo.exception.NoSuchAnnotationException;
-import com.itgo.util.PropertiesUtil;
+import com.itgo.util.file.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

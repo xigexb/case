@@ -1,4 +1,4 @@
-package com.itgo.util;
+package com.itgo.util.web;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -7,7 +7,7 @@ import java.net.URLEncoder;
 /**
  * Create by xb
  * The file is [ UrlCodecUtil] on [ case ] project
- * The file path is com.itgo.util.UrlCodecUtil
+ * The file path is com.itgo.util.web.UrlCodecUtil
  *
  * @versio 1.0.o
  * @Author he ming xi

@@ -1,11 +1,11 @@
-package com.itgo.util;
+package com.itgo.util.reflection;
 
 import com.itgo.exception.ObjectNotNullException;
 
 /**
  * Create by xb
  * The file is [ ReflectionUtil] on [ case ] project
- * The file path is com.itgo.util.ReflectionUtil
+ * The file path is com.itgo.util.reflection.ReflectionUtil
  *
  * @versio 1.0.o
  * @Author he ming xi

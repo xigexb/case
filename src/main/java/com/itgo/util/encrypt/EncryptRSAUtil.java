@@ -1,10 +1,8 @@
 package com.itgo.util.encrypt;
 
-import com.itgo.util.CastUtil;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
-import java.math.BigInteger;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;

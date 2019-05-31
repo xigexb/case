@@ -1,7 +1,7 @@
 package com.itgo.util.web;
 
 import com.alibaba.fastjson.JSONObject;
-import com.itgo.util.GsonUtil;
+import com.itgo.util.json.GsonUtil;
 import com.itgo.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -30,6 +30,14 @@ dependencies {
     implementation('org.apache.poi:poi-excelant:4.1.0')
     implementation('org.apache.poi:poi-examples:4.1.0')
 
+    //FTP
+    implementation('commons-net:commons-net:3.6')
+
+    //lang
+    implementation('org.apache.commons:commons-lang3:3.9')
+
+
+
 //    mongoDB
     implementation('org.mongodb:mongodb-driver:3.10.2')
 

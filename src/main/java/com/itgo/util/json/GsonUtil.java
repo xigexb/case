@@ -1,4 +1,4 @@
-package com.itgo.util;
+package com.itgo.util.json;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

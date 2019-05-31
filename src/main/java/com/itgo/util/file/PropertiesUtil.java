@@ -1,4 +1,6 @@
-package com.itgo.util;
+package com.itgo.util.file;
+
+import com.itgo.util.bean.CastUtil;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
