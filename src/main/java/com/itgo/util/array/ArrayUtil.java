@@ -55,7 +55,7 @@ public class ArrayUtil {
             }
             return sparseArray;
         } catch (ObjectNotNullException e) {
-
+            e.printStackTrace();
         }
         return null;
     }
@@ -79,7 +79,7 @@ public class ArrayUtil {
             return twoDimensionalArray;
 
         }catch (ObjectNotNullException e){
-
+            e.printStackTrace();
         }
         return null;
     }
