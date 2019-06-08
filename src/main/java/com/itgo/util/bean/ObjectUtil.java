@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 /**
  * Create by xigexb
@@ -116,7 +117,7 @@ public class ObjectUtil {
      * @param ignoreNull true / false
      * @return
      */
-    public static Map<String,Object> toMap(Object object , Boolean ignoreNull){
+    public static Map<String,Object> toMap(Object object, Boolean ignoreNull){
         Map<String,Object> map = null;
         ignoreNull = ignoreNull == null ? true : false;
         try {
@@ -146,6 +147,71 @@ public class ObjectUtil {
             e.printStackTrace();
         }
         return map;
+    }
+
+
+    /**
+     *
+     * @param formMap form map
+     * @param tClass tclass
+     * @param <T> T
+     * @return
+     */
+    public static <T> T toObject(Map<String,Object> formMap,Class<T> tClass){
+        return toObject(formMap,tClass,false);
+
+    }
+
+    /**
+     *
+     * @param formMap form map
+     * @param tClass tclass
+     * @param IgnoreCase true/false
+     * @param <T> T
+     * @return
+     */
+    public static <T> T toObject(Map<String,Object> formMap,Class<T> tClass,Boolean IgnoreCase){
+        T instance = null;
+        try {
+            if(formMap ==  null ){
+                throw  new ObjectNotNullException("data map must not null");
+            }
+            instance = tClass.newInstance();
+            Field[] fields = getFields(instance);
+            for (Field field : fields) {
+                field.setAccessible(true);
+                String fieldName = field.getName();
+                String typeName = field.getGenericType().getTypeName();
+                if(IgnoreCase){
+                    fieldName = fieldName.toLowerCase();
+                    typeName = typeName.toLowerCase();
+                }
+                Set<String> keySet = formMap.keySet();
+                for (String key : keySet) {
+                    String newKey = null;
+                    if(IgnoreCase){
+                        newKey = key.toLowerCase();
+                    }
+                    if(fieldName.equals(newKey)){
+                        Object o = formMap.get(key);
+                        if(o  == null){
+                            continue;
+                        }
+                        String toTypeName = o.getClass().getTypeName();
+                        if(IgnoreCase){
+                            toTypeName = toTypeName.toLowerCase();
+                        }
+                        if(typeName.equals(typeName)){
+                            field.set(instance,o);
+                        }
+                    }
+                }
+            }
+        }catch (ObjectNotNullException | InstantiationException | IllegalAccessException e){
+            e.printStackTrace();
+        }
+        return instance;
+
     }
 
 
