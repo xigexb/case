@@ -1,7 +1,5 @@
 package com.itgo.util.date;
 
-import com.itgo.util.bean.CastUtil;
-
 import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
