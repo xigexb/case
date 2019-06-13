@@ -538,4 +538,13 @@ public class DateUtil {
         return newDate;
     }
 
+    /**
+     * 按指定的格式sFormat将日期dDate转化为字符串
+     */
+    public static String date2String(Date date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
+    }
+
+
 }

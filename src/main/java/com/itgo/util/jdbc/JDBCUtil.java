@@ -7,15 +7,15 @@ import com.itgo.bean.DataBean;
 import com.itgo.enums.JDBCExecutionType;
 import com.itgo.exception.JDBCInitializationException;
 import com.itgo.exception.NoSuchAnnotationException;
+import com.itgo.util.date.DateUtil;
 import com.itgo.util.file.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Create by xigexb
@@ -45,32 +45,10 @@ public class JDBCUtil {
      */
     private static String userName;
 
-
     /**
      * 数据库连接密码
      */
     private static String password;
-
-
-//    /**
-//     * 使用静态代码块，加载数据库一些连接配置信息
-//     */
-//    static {
-//        Properties properties = PropertiesUtil.loadProps("db.properties");
-//        driver = PropertiesUtil.getString(properties, "driver");
-//        url = PropertiesUtil.getString(properties, "url");
-//        userName = PropertiesUtil.getString(properties, "userName");
-//        password = PropertiesUtil.getString(properties, "password");
-//        //加载jar文件中的驱动类
-//        try {
-//            Class.forName(driver);
-//            logger.info("initialization jdbc config file{} success",);
-//        } catch (ClassNotFoundException e) {
-//            logger.info("initialization jdbc config file{} failure");
-//            e.printStackTrace();
-//        }
-//    }
-
 
     public static void init(String configPath){
         Properties properties = PropertiesUtil.loadProps(configPath);
@@ -102,6 +80,26 @@ public class JDBCUtil {
             }
             // DriverManager 数据库驱动管家，可以用它来获取一个数据库连接 参数：连接地址 用户名 密码
             return DriverManager.getConnection(url, userName, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    /**
+     * 获取一个数据库连接 Connection
+     *
+     * @return
+     */
+    public static Connection getConn(String url ,String userName,String pwd) {
+        try {
+            if(url == null ||"".equals(url) || userName == null ||"".equals(userName) || pwd == null ||"".equals(pwd)){
+                logger.error("数据库配置项参数为空，请提供数据库连接参数信息[url,userName,password]:)");
+                throw new JDBCInitializationException("数据库配置项参数为空:)");
+            }
+            // DriverManager 数据库驱动管家，可以用它来获取一个数据库连接 参数：连接地址 用户名 密码
+            return DriverManager.getConnection(url, userName, pwd);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -230,6 +228,246 @@ public class JDBCUtil {
         return t;
     }
 
+    /**
+     * 获取所有表名
+     * @param url
+     * @param userName
+     * @param pwd
+     * @return
+     */
+    public static List<String> getTableName(String url ,String userName,String pwd) {
+        List<String> result = new ArrayList<>();
+        Connection connection = null;
+        try{
+            connection = getConn(url,userName,pwd);
+            ResultSet rs = connection.getMetaData().getTables(null, null, null, new String[]{"TABLE"});
+            while(rs.next()){
+                String tableName = rs.getString("TABLE_NAME");
+                System.out.println(tableName);
+                result.add(tableName);
+            }
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
 
+    }
+
+    /**
+     * 获取所有表名
+     * @return
+     */
+    public static List<String> getTableName() {
+        return getTableName(url,userName,password);
+    }
+
+    private static String getCatalogByUrl(String url){
+        String[] arrsys = url.split("/");
+        if(null != arrsys && arrsys.length > 0){
+            String cataLogUrl = arrsys[arrsys.length-1];
+            String[] cataArr = cataLogUrl.split("\\?");
+            return cataArr[0];
+        }
+        return null;
+
+    }
+
+    /**
+     * 获取所有字段名
+     * @param url
+     * @param userName
+     * @param pwd
+     * @param tableName
+     * @return
+     */
+    public static List<Map<String,String>> getColumn(String url , String userName, String pwd, String tableName){
+        List<Map<String,String>> result = new ArrayList<>();
+        Connection connection = null;
+        try{
+            connection = getConn(url,userName,pwd);
+            ResultSet columnsResult = connection.getMetaData().getColumns(null, "%", tableName, "%");
+
+            String catalog = getCatalogByUrl(url);
+            String pkName = "";
+            ResultSet primaryKeyResultSet = connection.getMetaData().getPrimaryKeys(catalog,null,tableName);
+            while(primaryKeyResultSet.next()){
+                pkName = primaryKeyResultSet.getString("COLUMN_NAME");
+            }
+            while(columnsResult.next()){
+                Map<String,String> resultMap = new HashMap();
+                String columnName = columnsResult.getString("COLUMN_NAME");
+                String typeName = columnsResult.getString("TYPE_NAME");
+                String columnRemarks = columnsResult.getString("REMARKS");
+
+                resultMap.put("column",columnName);
+                resultMap.put("type",typeName);
+                resultMap.put("remark",columnRemarks);
+                if(pkName.equals(columnName)){
+                    resultMap.put("isPk","1");
+                }
+//                else {
+//                    resultMap.put("isPk",false);
+//                }
+                result.add(resultMap);
+            }
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * 获取所有字段名
+     * @param tableName 表名
+     * @return
+     */
+    public static List<Map<String,String>> getColumn(String tableName){
+        return getColumn(url,userName,password,tableName);
+    }
+
+    /**
+     * 结果集-->map
+     * @param url
+     * @param userName
+     * @param pwd
+     * @param sql
+     * @return
+     */
+    public static List<Map<String,String>> getResultListMap(String url , String userName, String pwd, String sql){
+        List<Map<String,String>> result = new ArrayList<>();
+        Connection connection = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+        try{
+            connection = getConn(url,userName,pwd);
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            ResultSetMetaData  rsmd = rs.getMetaData();
+            while(rs.next()){
+                Map<String,Object> map = new HashMap<String,Object>();
+                for(int i = 0 ; i < rsmd.getColumnCount() ; i++){
+                    String col_name = rsmd.getColumnName(i+1);
+                    Object col_value = rs.getObject(col_name);
+                    if(col_value == null){
+                        col_value = "";
+                    }
+                    map.put(col_name, col_value);
+                }
+                mapList.add(map);
+            }
+
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(rs != null ) {
+                    rs.close();
+                    ps.close();
+                }
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+
+    /**
+     * 结果集-->list<map>
+     * @param sql sql语句
+     * @return
+     */
+    public static List<Map<String,String>> getResultListMap(String sql){
+        return getResultListMap(url ,userName,password,sql);
+    }
+
+
+    /**
+     * 结果集-->map
+     * @param url
+     * @param userName
+     * @param pwd
+     * @param sql
+     * @return
+     */
+    public static Map<String,Object> getResultMap(String url , String userName, String pwd, String sql){
+        List<Map<String,String>> result = new ArrayList<>();
+        Connection connection = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
+        try{
+            connection = getConn(url,userName,pwd);
+            ps = connection.prepareStatement(sql);
+            rs = ps.executeQuery();
+            ResultSetMetaData  rsmd = rs.getMetaData();
+            int count=0;
+            while(rs.next()){
+                if(count>0) {
+                    break;
+                }
+                count = count +1;
+                Map<String,Object> map = new HashMap<String,Object>();
+                for(int i = 0 ; i < rsmd.getColumnCount() ; i++){
+                    String col_name = rsmd.getColumnName(i+1);
+                    Object col_value = rs.getObject(col_name);
+                    Optional<Object> col_value1Opt = Optional.ofNullable(col_value);
+                    if(col_value1Opt.orElse("") instanceof java.util.Date){
+                        map.put(col_name, DateUtil.date2String((Date) col_value1Opt.get(),"yyyy-MM-dd"));
+                    }else{
+                        map.put(col_name,col_value1Opt.orElse("") );
+                    }
+                }
+                mapList.add(map);
+            }
+            if(mapList.size()>0) {
+                return mapList.get(0);
+            }else {
+                return null;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(rs != null ) {
+                    rs.close();
+                    ps.close();
+                }
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * 结果集-->map
+     * @param sql
+     * @return
+     */
+    public static Map<String,Object> getResultMap(String sql){
+        return getResultMap(url ,userName,password,sql);
+    }
 }
 
