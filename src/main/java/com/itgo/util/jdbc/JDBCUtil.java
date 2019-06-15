@@ -68,38 +68,31 @@ public class JDBCUtil {
 
 
     /**
-     * 获取一个数据库连接 Connection
-     *
-     * @return
+     * 获取一个数据库连接
+     * @return Connection
      */
     public static Connection getConn() {
-        try {
-            if(url == null ||"".equals(url) || userName == null ||"".equals(userName) || password == null ||"".equals(password)){
-                logger.error("数据库配置项参数为空，请先调用 init 方法进行数据库配置项初始化:)");
-                throw new JDBCInitializationException("数据库配置项参数为空:)");
-            }
-            // DriverManager 数据库驱动管家，可以用它来获取一个数据库连接 参数：连接地址 用户名 密码
-            return DriverManager.getConnection(url, userName, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-
+        return getConn(url,userName,password);
     }
 
     /**
-     * 获取一个数据库连接 Connection
-     *
-     * @return
+     * 获取一个数据库连接
+     * @return Connection
      */
-    public static Connection getConn(String url ,String userName,String pwd) {
+    public static Connection getConn(String url ,String userName,String password) {
         try {
-            if(url == null ||"".equals(url) || userName == null ||"".equals(userName) || pwd == null ||"".equals(pwd)){
-                logger.error("数据库配置项参数为空，请提供数据库连接参数信息[url,userName,password]:)");
-                throw new JDBCInitializationException("数据库配置项参数为空:)");
+            String msg = checkParams(url, userName, password);
+            if(!"ok".equals(msg)){
+                logger.error("数据库配置项参数为空，请提供数据库连接参数信息:)");
+                throw new IllegalArgumentException(msg);
+            }else {
+                Connection connection = DriverManager.getConnection(url, userName, password);
+                if(connection != null){
+                    return connection;
+                }else {
+                    throw new SQLException("获取连接失败，请检查数据库连接配置:)");
+                }
             }
-            // DriverManager 数据库驱动管家，可以用它来获取一个数据库连接 参数：连接地址 用户名 密码
-            return DriverManager.getConnection(url, userName, pwd);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -107,7 +100,12 @@ public class JDBCUtil {
 
     }
 
-    // 2.关闭所有数据库连接,要考虑的问题,方法有没有参数,有没有返回值
+
+    /**
+     * 关闭资源
+     * @param ps
+     * @param rs
+     */
     public static void closeAll(PreparedStatement ps, ResultSet rs) {
         try {
             // 1.先关闭rs
@@ -232,14 +230,14 @@ public class JDBCUtil {
      * 获取所有表名
      * @param url
      * @param userName
-     * @param pwd
+     * @param password
      * @return
      */
-    public static List<String> getTableName(String url ,String userName,String pwd) {
+    public static List<String> getTableName(String url ,String userName,String password) {
         List<String> result = new ArrayList<>();
         Connection connection = null;
         try{
-            connection = getConn(url,userName,pwd);
+            connection = getConn(url,userName,password);
             ResultSet rs = connection.getMetaData().getTables(null, null, null, new String[]{"TABLE"});
             while(rs.next()){
                 String tableName = rs.getString("TABLE_NAME");
@@ -283,15 +281,15 @@ public class JDBCUtil {
      * 获取所有字段名
      * @param url
      * @param userName
-     * @param pwd
+     * @param password
      * @param tableName
      * @return
      */
-    public static List<Map<String,String>> getColumn(String url , String userName, String pwd, String tableName){
+    public static List<Map<String,String>> getColumn(String url , String userName, String password, String tableName){
         List<Map<String,String>> result = new ArrayList<>();
         Connection connection = null;
         try{
-            connection = getConn(url,userName,pwd);
+            connection = getConn(url,userName,password);
             ResultSet columnsResult = connection.getMetaData().getColumns(null, "%", tableName, "%");
 
             String catalog = getCatalogByUrl(url);
@@ -344,18 +342,18 @@ public class JDBCUtil {
      * 结果集-->map
      * @param url
      * @param userName
-     * @param pwd
+     * @param password
      * @param sql
      * @return
      */
-    public static List<Map<String,String>> getResultListMap(String url , String userName, String pwd, String sql){
+    public static List<Map<String,String>> getResultListMap(String url , String userName, String password, String sql){
         List<Map<String,String>> result = new ArrayList<>();
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
         try{
-            connection = getConn(url,userName,pwd);
+            connection = getConn(url,userName,password);
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
             ResultSetMetaData  rsmd = rs.getMetaData();
@@ -405,18 +403,18 @@ public class JDBCUtil {
      * 结果集-->map
      * @param url
      * @param userName
-     * @param pwd
+     * @param password
      * @param sql
      * @return
      */
-    public static Map<String,Object> getResultMap(String url , String userName, String pwd, String sql){
+    public static Map<String,Object> getResultMap(String url , String userName, String password, String sql){
         List<Map<String,String>> result = new ArrayList<>();
         Connection connection = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         List<Map<String,Object>> mapList = new ArrayList<Map<String,Object>>();
         try{
-            connection = getConn(url,userName,pwd);
+            connection = getConn(url,userName,password);
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
             ResultSetMetaData  rsmd = rs.getMetaData();
@@ -469,5 +467,27 @@ public class JDBCUtil {
     public static Map<String,Object> getResultMap(String sql){
         return getResultMap(url ,userName,password,sql);
     }
+
+    /**
+     * 检查数据库连接参数
+     * @param url url
+     * @param userName username
+     * @param password password
+     * @return msg
+     */
+    private static String checkParams(String url,String userName,String password){
+        StringBuffer sb = new StringBuffer("为空:)");
+        if(url == null || "".equals(url)){
+            return sb.insert(0,"数据库连接URL").toString();
+        }
+        if(userName == null || "".equals(userName)){
+            return sb.insert(0,"数据库连接用户名").toString();
+        }
+        if(password == null || "".equals(password)){
+            return sb.insert(0,"数据库连接密码").toString();
+        }
+        return "ok";
+    }
+
 }
 
