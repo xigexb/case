@@ -35,21 +35,58 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpClient {
 
-    public static String doGet(String url) {
+    private static final int READ_TIMEOUT = 60000;
+
+    private static final int CONNECT_TIMEOUT = 60000;
+
+
+    /**
+     * GET 请求
+     * @param url
+     * @param headerParams
+     * @return
+     */
+    public static String doGet(String url, Map<String, String> headerParams, Map<String, String> requestParams,int connectTimeout, int readTimeout) {
         CloseableHttpClient httpClient = null;
         CloseableHttpResponse response = null;
         String result = "";
+        String params = "";
         try {
             // 通过址默认配置创建一个httpClient实例
             httpClient = HttpClients.createDefault();
             // 创建httpGet远程连接实例
-            HttpGet httpGet = new HttpGet(url);
-            // 设置请求头信息，鉴权
-            httpGet.setHeader("Authorization", "Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0");
+            if (requestParams != null && !requestParams.isEmpty()) {
+                StringBuffer str = new StringBuffer();
+                Set set = requestParams.keySet();
+                Iterator iter = set.iterator();
+                while (iter.hasNext()) {
+                    String key = iter.next().toString();
+                    if (requestParams.get(key) == null) {
+                        continue;
+                    }
+                    str.append(key).append("=").append(requestParams.get(key)).append("&");
+                }
+                if (str.length() > 0) {
+                    params = "?" + str.substring(0, str.length() - 1);
+                }
+            }
+            HttpGet httpGet = new HttpGet(url+params);
+            // 设置请求头 参数
+            if(headerParams != null && !headerParams.isEmpty()){
+                for (String key : headerParams.keySet()) {
+                    httpGet.setHeader(key, headerParams.get(key));
+                }
+            }
+            if (connectTimeout < 1) {
+                connectTimeout = CONNECT_TIMEOUT;
+            }
+            if (readTimeout < 1) {
+                readTimeout = READ_TIMEOUT;
+            }
             // 设置配置请求参数
             RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
-                    .setConnectionRequestTimeout(35000)// 请求超时时间
-                    .setSocketTimeout(60000)// 数据读取超时时间
+                    .setConnectionRequestTimeout(connectTimeout)// 请求超时时间
+                    .setSocketTimeout(readTimeout)// 数据读取超时时间
                     .build();
             // 为httpGet实例设置配置
             httpGet.setConfig(requestConfig);
@@ -102,7 +139,7 @@ public class HttpClient {
         httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
         // 封装post请求参数
         if (null != paramMap && paramMap.size() > 0) {
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+            List<NameValuePair> nvps = new ArrayList<>();
             // 通过map集成entrySet方法获取entity
             Set<Entry<String, Object>> entrySet = paramMap.entrySet();
             // 循环遍历，获取迭代器
