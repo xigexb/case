@@ -84,7 +84,7 @@ public class HttpClient {
                 readTimeout = READ_TIMEOUT;
             }
             // 设置配置请求参数
-            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
+            RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectTimeout)// 连接主机服务超时时间
                     .setConnectionRequestTimeout(connectTimeout)// 请求超时时间
                     .setSocketTimeout(readTimeout)// 数据读取超时时间
                     .build();
