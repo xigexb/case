@@ -3,12 +3,13 @@ package com.itgo.util.jdbc.dao;
 import java.util.List;
 
 /**
- * Create by s71
+ * Create by xigexb
  *
  * @versio 1.0.0
- * @Author s71
+ * @Author xigexb
  * @date 2019/6/18 9:05
- * @Description desc:
+ * @Description
+ *      desc:desc:JDBC通用操作基类接口
  */
 public  interface BaseDao<T> {
 

@@ -21,7 +21,8 @@ import java.util.List;
  * @versio 1.0.0
  * @Author xigexb
  * @date 2019/6/18 9:09
- * @Description desc:
+ * @Description
+ *      desc:JDBC通用操作基类实现
  */
 public class BaseDaoImpl<T> implements BaseDao<T> {
 
