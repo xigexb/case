@@ -40,4 +40,10 @@ public @interface BeanField {
      * @return
      */
     String pattern() default "null";
+
+
+    /**
+     * @return
+     */
+    String column() default "null";
 }
