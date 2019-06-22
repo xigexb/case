@@ -16,14 +16,20 @@ import java.util.List;
  * @versio 1.0.0
  * @Author xigexb
  * @date 2019/5/30 16:44
- * @description
- *      desc:对象工具类
+ * @description desc:对象工具类
  */
-public class ObjectUtil {
+public final class ObjectUtil {
+
+
+    /**
+     * Separator
+     */
+    private static final String DEF_SEPARATOR = "=";
 
 
     /**
      * copy object
+     *
      * @param formObject
      * @param tClass
      * @param <T>
@@ -57,8 +63,9 @@ public class ObjectUtil {
 
     /**
      * copy object  not return
+     *
      * @param formObject form
-     * @param toObject to
+     * @param toObject   to
      */
     public static void copy(Object formObject, Object toObject) {
         try {
@@ -80,23 +87,24 @@ public class ObjectUtil {
 
     /**
      * copy object for list
+     *
      * @param dataList data list
-     * @param tClass class object
-     * @param <T> t
+     * @param tClass   class object
+     * @param <T>      t
      * @return T type data list
      */
-    public static <T> List<T> copyList(List<?> dataList,Class<T> tClass) {
+    public static <T> List<T> copyList(List<?> dataList, Class<T> tClass) {
         List<T> data = null;
         try {
-            if(!(dataList != null && !dataList.isEmpty())){
-                throw  new ObjectNotNullException("data list must not null");
+            if (!(dataList != null && !dataList.isEmpty())) {
+                throw new ObjectNotNullException("data list must not null");
             }
             data = new ArrayList<>();
             for (Object form : dataList) {
                 T t = copy(form, tClass);
                 data.add(t);
             }
-        }catch (ObjectNotNullException e){
+        } catch (ObjectNotNullException e) {
             e.printStackTrace();
         }
         return data;
@@ -104,44 +112,46 @@ public class ObjectUtil {
 
     /**
      * not ignore null
+     *
      * @param object object
      * @return
      */
-    public static Map<String,Object> toMap(Object object){
-        return toMap(object,false);
+    public static Map<String, Object> toMap(Object object) {
+        return toMap(object, false);
     }
 
     /**
      * ignore null  true / false
-     * @param object object
+     *
+     * @param object     object
      * @param ignoreNull true / false
      * @return
      */
-    public static Map<String,Object> toMap(Object object, Boolean ignoreNull){
-        Map<String,Object> map = null;
+    public static Map<String, Object> toMap(Object object, Boolean ignoreNull) {
+        Map<String, Object> map = null;
         ignoreNull = ignoreNull == null ? true : false;
         try {
-            if(object == null){
+            if (object == null) {
                 throw new ObjectNotNullException("object must not null");
             }
             Field[] fields = getFields(object);
             for (Field field : fields) {
-                if(field != null){
-                    if(map == null){
+                if (field != null) {
+                    if (map == null) {
                         map = new HashMap<>();
                     }
                     field.setAccessible(true);
                     Object val = field.get(object);
-                    if(ignoreNull){
-                        if(val != null){
-                            map.put(field.getName(),val);
+                    if (ignoreNull) {
+                        if (val != null) {
+                            map.put(field.getName(), val);
                         }
-                    }else {
-                        map.put(field.getName(),val);
+                    } else {
+                        map.put(field.getName(), val);
                     }
                 }
             }
-        }catch (ObjectNotNullException e){
+        } catch (ObjectNotNullException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -151,30 +161,28 @@ public class ObjectUtil {
 
 
     /**
-     *
      * @param formMap form map
-     * @param tClass tclass
-     * @param <T> T
+     * @param tClass  tclass
+     * @param <T>     T
      * @return
      */
-    public static <T> T toObject(Map<String,Object> formMap,Class<T> tClass){
-        return toObject(formMap,tClass,false);
+    public static <T> T toObject(Map<String, Object> formMap, Class<T> tClass) {
+        return toObject(formMap, tClass, false);
 
     }
 
     /**
-     *
-     * @param formMap form map
-     * @param tClass tclass
+     * @param formMap    form map
+     * @param tClass     tclass
      * @param IgnoreCase true/false
-     * @param <T> T
+     * @param <T>        T
      * @return
      */
-    public static <T> T toObject(Map<String,Object> formMap,Class<T> tClass,Boolean IgnoreCase){
+    public static <T> T toObject(Map<String, Object> formMap, Class<T> tClass, Boolean IgnoreCase) {
         T instance = null;
         try {
-            if(formMap ==  null ){
-                throw  new ObjectNotNullException("data map must not null");
+            if (formMap == null) {
+                throw new ObjectNotNullException("data map must not null");
             }
             instance = tClass.newInstance();
             Field[] fields = getFields(instance);
@@ -182,32 +190,32 @@ public class ObjectUtil {
                 field.setAccessible(true);
                 String fieldName = field.getName();
                 String typeName = field.getGenericType().getTypeName();
-                if(IgnoreCase){
+                if (IgnoreCase) {
                     fieldName = fieldName.toLowerCase();
                     typeName = typeName.toLowerCase();
                 }
                 Set<String> keySet = formMap.keySet();
                 for (String key : keySet) {
                     String newKey = null;
-                    if(IgnoreCase){
+                    if (IgnoreCase) {
                         newKey = key.toLowerCase();
                     }
-                    if(fieldName.equals(newKey)){
+                    if (fieldName.equals(newKey)) {
                         Object o = formMap.get(key);
-                        if(o  == null){
+                        if (o == null) {
                             continue;
                         }
                         String toTypeName = o.getClass().getTypeName();
-                        if(IgnoreCase){
+                        if (IgnoreCase) {
                             toTypeName = toTypeName.toLowerCase();
                         }
-                        if(typeName.equals(typeName)){
-                            field.set(instance,o);
+                        if (typeName.equals(typeName)) {
+                            field.set(instance, o);
                         }
                     }
                 }
             }
-        }catch (ObjectNotNullException | InstantiationException | IllegalAccessException e){
+        } catch (ObjectNotNullException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return instance;
@@ -217,10 +225,11 @@ public class ObjectUtil {
 
     /**
      * copy value
+     *
      * @param formObj form
-     * @param formF form field
-     * @param toObj to
-     * @param toF to filed
+     * @param formF   form field
+     * @param toObj   to
+     * @param toF     to filed
      */
     private static void copyValue(Object formObj, Field formF, Object toObj, Field toF) {
         formF.setAccessible(true);
@@ -259,7 +268,7 @@ public class ObjectUtil {
                             toF.set(toObj, val);
                         }
                     } else {
-                        if(val !=  null){
+                        if (val != null) {
                             Object convertVal = convert(val, tType);
                             toF.set(toObj, convertVal);
                         }
@@ -273,10 +282,10 @@ public class ObjectUtil {
         }
     }
 
-
     /**
      * convert value
-     * @param val value
+     *
+     * @param val       value
      * @param className type class
      * @return
      */
@@ -338,6 +347,198 @@ public class ObjectUtil {
         Field[] fields = new Field[fieldList.size()];
         fieldList.toArray(fields);
         return fields;
+    }
+
+    /**
+     * get Object all fields Ignore Empty field
+     *
+     * @param object
+     * @return
+     */
+    public static Field[] getFieldsIgnoreEmpty(Object object) {
+        try {
+            Class clazz = object.getClass();
+            List<Field> fieldList = new ArrayList<>();
+            while (clazz != null) {
+                Field[] fields = clazz.getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    Object o = field.get(object);
+                    if (o != null && !"".equals(o.toString())) {
+                        fieldList.add(field);
+                    }
+                }
+                clazz = clazz.getSuperclass();
+                if (clazz != null && "Object".equals(clazz.getSimpleName())) {
+                    clazz = null;
+                }
+            }
+            Field[] fields = new Field[fieldList.size()];
+            fieldList.toArray(fields);
+            return fields;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * toString Ignore Empty field
+     *
+     * @param t
+     * @param <T>
+     * @return
+     */
+    public static <T> String toStringIgnoreEmpty(T t) {
+        try {
+            if (t == null) {
+                throw new ObjectNotNullException("Object must not null");
+            }
+            Class aClass = t.getClass();
+            String classSimpleName = aClass.getSimpleName();
+            StringBuffer sb = new StringBuffer(classSimpleName);
+            sb.append("{");
+            //get fields
+            Field[] fields = getFields(t);
+            if (fields.length > 0) {
+                Boolean flag = false;
+                for (int i = 0; i < fields.length; i++) {
+                    Field field = fields[i];
+                    field.setAccessible(true);
+                    Object o = field.get(t);
+                    if (o != null) {
+                        String value = o.toString();
+                        if (value != null && !"".equals(value)) {
+                            flag = true;
+                            String fieldName = field.getName();
+                            String typeName = field.getGenericType().getTypeName();
+                            splice(sb, fieldName, value, typeName);
+                        }
+                    }
+                    if (flag) {
+                        if (i != fields.length - 1) {
+                            sb.append(",");
+                        }
+                        flag = false;
+                    }
+                }
+            }
+            return sb.append("}").toString();
+        } catch (ObjectNotNullException e) {
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     *toString
+     * @param t
+     * @param <T>
+     * @return
+     */
+    public static <T> String toString(T t) {
+        try {
+            if (t == null) {
+                throw new ObjectNotNullException("Object must not null");
+            }
+            Class aClass = t.getClass();
+            String classSimpleName = aClass.getSimpleName();
+            StringBuffer sb = new StringBuffer(classSimpleName);
+            sb.append("{");
+            //get fields
+            Field[] fields = getFields(t);
+            if (fields.length > 0) {
+                for (int i = 0; i < fields.length; i++) {
+                    Field field = fields[i];
+                    field.setAccessible(true);
+                    Object o = field.get(t);
+                    String fieldName = field.getName();
+                    String typeName = field.getGenericType().getTypeName();
+                    if (o != null) {
+                        String value = o.toString();
+                        if (value != null && !"".equals(value)) {
+                            splice(sb, fieldName, value, typeName);
+                        }
+                    } else {
+                        sb.append(fieldName);
+                        sb.append(DEF_SEPARATOR);
+                        sb.append("null");
+                    }
+                    if (i != fields.length - 1) {
+                        sb.append(",");
+                    }
+                }
+            }
+            return sb.append("}").toString();
+        } catch (ObjectNotNullException e) {
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 拼接属性
+     * @param sb
+     * @param fieldName
+     * @param value
+     * @param typeClassName
+     */
+    private static void splice(StringBuffer sb, String fieldName, String value, String typeClassName) {
+        switch (typeClassName) {
+            case "char":
+            case "java.lang.Character":
+            case "java.lang.String":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append("'" + value + "'");
+                break;
+            case "java.lang.Integer":
+            case "int":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(Integer.valueOf(value));
+                break;
+            case "float":
+            case "java.lang.Float":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(Float.valueOf(value));
+                break;
+            case "double":
+            case "java.lang.Double":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(Double.valueOf(value));
+                break;
+            case "java.lang.Long":
+            case "long":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(Long.valueOf(value));
+                break;
+            case "java.lang.Short":
+            case "short":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(Short.valueOf(value));
+                break;
+            case "java.math.BigDecimal":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(BigDecimal.valueOf(Double.valueOf(value)));
+                break;
+            case "java.lang.Boolean":
+            case "boolean":
+                sb.append(fieldName);
+                sb.append(DEF_SEPARATOR);
+                sb.append(Boolean.valueOf(value));
+                break;
+        }
     }
 
 
