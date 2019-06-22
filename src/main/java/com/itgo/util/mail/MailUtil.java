@@ -52,7 +52,7 @@ public class MailUtil {
     private static Session session;
 
     /**
-     * // 设置为debug模式, 可以查看详细的发送 log
+     * 设置为debug模式, 可以查看详细的发送 log
      */
     private static Boolean isDebug;
 
