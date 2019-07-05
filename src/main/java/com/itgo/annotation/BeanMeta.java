@@ -28,4 +28,13 @@ public @interface BeanMeta {
     String desc() default "null";
 
 
+    /**
+     * 表
+     * @return
+     */
+    String table() default "null";
+
+
+
+
 }
