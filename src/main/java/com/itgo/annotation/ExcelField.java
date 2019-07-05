@@ -29,6 +29,13 @@ public @interface ExcelField {
      */
     boolean isNeed() default true;
 
+    /**
+     * 是否处理科学计数法
+     * @return
+     */
+    boolean isParseScientificNotation() default false;
+
+
 
 
 

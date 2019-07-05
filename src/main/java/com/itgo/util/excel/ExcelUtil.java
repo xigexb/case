@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Create by xigexb
@@ -38,6 +39,18 @@ public class ExcelUtil {
      * logger
      */
     private static final Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
+
+
+    /**
+     * 匹配科学计数法
+     * 判断输入字符串是否为科学计数法
+     * @param input
+     * @return
+     */
+    public static boolean isENum(String input) {
+        Pattern pattern = Pattern.compile("(-?\\d+\\.?\\d*)[Ee]{1}[\\+-]?[0-9]*");
+        return pattern.matcher(input).matches();
+    }
 
 
     /*************************************************Excel导入**********************************************************************/
@@ -373,6 +386,20 @@ public class ExcelUtil {
             case "boolean":
                 formatValue = Boolean.valueOf(cellValue.toString());
                 break;
+        }
+        boolean annotationPresent = field.isAnnotationPresent(ExcelField.class);
+        if(annotationPresent){
+            ExcelField excelField = field.getAnnotation(ExcelField.class);
+            boolean isParseScientificNotation = excelField.isParseScientificNotation();
+            if(isParseScientificNotation){
+                //处理科学计数法
+                String value = formatValue.toString();
+                if(isENum(value)){
+                    DecimalFormat ds = new DecimalFormat("0");
+                    value = ds.format(Double.parseDouble(value)).trim();
+                }
+                formatValue = value;
+            }
         }
         return formatValue;
     }
