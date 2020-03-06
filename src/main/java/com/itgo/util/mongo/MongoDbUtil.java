@@ -58,8 +58,6 @@ public class MongoDbUtil {
         public static Integer maxWaitTime;
         public static Integer connectTimeout;
         public static MongoClientOptions options;
-        public static DB db;
-        public static GridFS gridFS;
         public static MongoDatabase database;
 
         public static MongoCredential credential;

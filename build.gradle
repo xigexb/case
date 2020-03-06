@@ -67,20 +67,24 @@ dependencies {
     //lang
     implementation('org.apache.commons:commons-lang3:3.9')
 
-//    mongoDB
+    //mongoDB
     implementation('org.mongodb:mongodb-driver:3.10.2')
 
-//    web
+    // web
     implementation('javax.servlet:javax.servlet-api:4.0.1')
 
-//   fastJson
+    //fastJson
     implementation('com.alibaba:fastjson:1.2.58')
-//
+
 //  code generator
     implementation('com.itgo:code-generator:1.0.0')
 
+    //jackson
+    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.10.3')
+    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-properties:2.10.3')
 
-
+    // https://mvnrepository.com/artifact/cn.hutool/hutool-all
+    implementation('cn.hutool:hutool-all:5.1.5')
 
 
 

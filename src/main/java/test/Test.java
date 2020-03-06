@@ -1,6 +1,13 @@
 package test;
 
-import com.itgo.util.redis.RedisUtil;
+
+import com.itgo.util.yml.YmlUtils;
+import sun.misc.BASE64Encoder;
+
+import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Create by xb
@@ -14,7 +21,9 @@ import com.itgo.util.redis.RedisUtil;
  */
 public class Test {
 
-    public static void main(String[] args){
+//    private static  final Logger logger = LoggerFactory.getLogger(Test.class);
+
+    public static void main(String[] args) throws Exception {
 //        DBConfig config = new DBConfig();
 //        config.setUri("jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=true");
 //        config.setDriver("com.mysql.jdbc.Driver");
@@ -72,9 +81,8 @@ public class Test {
 //        System.out.println("结果："+ss.equals(sss));
         //OmFTSx4kinv7EOHgyk8KqS5OnZexUwdZyJH9wJJs1CFnbV5tHcDyI3ZFty+5Ozgh7p6IaE/1+meFlyKxz94DeTdnT/pd0+fVXDbzhLrkL/5pxx4PAUXVMf0L44Asw7VfiP6erBfGAWWIz3htm2hd26bYXPyciaSJTScohOOSE7Q=
         //Ei6dClJ3KtZekTWf0NyhMNGv8FE2QtJmg5Vc+oUTndbflAfKNAuzWFypC9Ijme9Lba6GmX5IveVU2vdMvvDX4k6Tyvfv0ZQaD+3EqZBIzxBniUHo1rkbtAl6ZiKwCieVJiNhlzKE8Nszrgcvr3JJEeVtXpPTfm7xClIduyz2sBE=
-       // flA+5glGk1OW4KbnpSYzMMUkRtTJok8JefOG0qEnLnlpZOlTnSnCgomsIf9JMvpq3y6dapcBjsWAVowPGUbyhftSzhpcKGNgBV5thq72EAdN1KnYbuyJXvnhmYy0mpgqrFNE17b9Rs+D/4Aj53hHy6kSKrtm4pi0jq08SDvSlR4=
-       // MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCXdrXNn1frPZXZGhdZ8hY0SKJ2CP/u9j7xYzBuKW+tLUyYSi8I2q2ihR/YCJJN29ehAiR/6y87nFxZiiJzWoICoUWJnokFDO8nQ6b67YcL6J/2HbYbU/Az/+DKKsQXSD8B8BA7slRQ4NHnhOqlhSv8AOMKsBp9RBMEI63iB9s/0wIDAQAB
-
+        // flA+5glGk1OW4KbnpSYzMMUkRtTJok8JefOG0qEnLnlpZOlTnSnCgomsIf9JMvpq3y6dapcBjsWAVowPGUbyhftSzhpcKGNgBV5thq72EAdN1KnYbuyJXvnhmYy0mpgqrFNE17b9Rs+D/4Aj53hHy6kSKrtm4pi0jq08SDvSlR4=
+        // MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCXdrXNn1frPZXZGhdZ8hY0SKJ2CP/u9j7xYzBuKW+tLUyYSi8I2q2ihR/YCJJN29ehAiR/6y87nFxZiiJzWoICoUWJnokFDO8nQ6b67YcL6J/2HbYbU/Az/+DKKsQXSD8B8BA7slRQ4NHnhOqlhSv8AOMKsBp9RBMEI63iB9s/0wIDAQAB
 
 
 //        String key = "81196xigexb";
@@ -82,10 +90,185 @@ public class Test {
 //        System.out.println(jsonData2);
 //        System.out.println(encrypt);
 //        System.out.println(EncryptDESUtil.encrypt(encrypt,key));
-        RedisUtil.init("db.properties");
-        RedisUtil redisInstance = RedisUtil.getRedisInstance();
-        RedisUtil.Strings strings   = redisInstance.new Strings();
-        strings.set("xgxb","何明喜");
-        System.out.println(strings.get("xgxb"));
+//        RedisUtil.init(null);
+//        RedisUtil redisInstance = RedisUtil.getRedisInstance();
+//        RedisUtil.Strings strings   = redisInstance.new Strings();
+//        strings.set("xgxb","何明喜");
+//        System.out.println(strings.get("xgxb"));
+
+////        logger.info("ssssssssssssssssssssssssss");
+//        Student student = new Student("Tom",19);
+
+//        student.setSex(12);
+//        Student student2 = new Student();
+//
+//
+//        ObjectUtil.copy(student, student2);
+//        System.out.println(student);
+//        System.out.println(student2);
+
+//        List<Student> students = Arrays.asList(new Student("Tom", 19,1), new Student("周三", 19,1), new Student("王八", 19,1), new Student("赵柳", 19,1), new Student("无极", 19,1));
+////        List<Student2> student2s = ObjectUtil.copyList(students, Student2.class);
+////        System.out.println(students);
+//        for (Student student : students) {
+//            Map<String, Object> map = ObjectUtil.toMap(student);
+//            System.out.println(map);
+//        }
+
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("naMe","Tom");
+//        map.put("aGe",18);
+//        map.put("SEX",1);
+//
+//        Student student = ObjectUtil.toObject(map, Student.class,true);
+//        System.out.println(student);
+//        Integer[][] is = new Integer[12][12];
+//        is[0][1] = 1;
+//        is[6][1] = 0;
+//        is[2][6] = 1;
+//        Object[][] objects = ArrayUtil.toSparseArray(null);
+//        Object[][] newObjects = ArrayUtil.toTwoDimensionalArray(objects);
+//
+//        for (Integer[] i : is) {
+//            for (Integer j : i) {
+//                System.out.print(j+"\t");
+//            }
+//            System.out.println();
+//        }
+//
+//        System.out.println("===================================================================");
+//
+//        for (int i = 0; i < objects.length; i++) {
+//            System.out.printf("%d\t%d\t%d\n",objects[i][0],objects[i][1],objects[i][2]);
+//        }
+//        System.out.println("===================================================================");
+//
+//        for (Object[] i : newObjects) {
+//            for (Object j : i) {
+//                System.out.print(j+"\t");
+//            }
+//            System.out.println();
+//        }
+//        MailUtil.init("mail.properties");
+//        String code = "125701";
+//        MainBean mainBean = new MainBean();
+//        mainBean.setToMail("365826650@qq.com");
+//        mainBean.setSubject("注册通知");
+//        mainBean.setUserName("白先生");
+//        mainBean.setTitle("ITGo-研发部");
+//        mainBean.setContent("<div style=\"width: 500px\">\n" +
+//                "        <h4>尊敬的"+mainBean.getUserName()+ ",您好：</h4>\n" +
+//                "        <p style=\"padding-left: 20px;\">你的验证码是：<span style=\"font-size: 25px; color: blue;\">"+code+"</span>，五分钟内有效。</p >\n" +
+//                "</div>");
+//        String s = MailUtil.sendSimpleMail(mainBean);
+//        System.out.println(s);
+
+
+//        System.out.println(firstLetterToUpper("name"));
+//        char n = 'n';
+//        char s = 's';
+//        System.out.println((char)83);
+//        n = (char)(n-32);
+//        System.out.println(n);
+
+//        CodeBean codeBean =  new CodeBean();
+//
+//        DBBean db = new DBBean();
+//        db.setDriver("com.mysql.cj.jdbc.Driver");
+//        db.setUrl("jdbc:mysql://localhost:3306/shop?useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=UTC");
+//        db.setUsername("dev");
+//        db.setPassword("81196");
+//        codeBean.setDbBean(db);
+//
+//        BeanMeta bean = new BeanMeta();
+//        bean.setPackagePath("com.itgo");
+//        bean.setAuthor("xigexb");
+//        bean.setVersion("1.0.0");
+//        bean.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:sss").format(new Date()));
+//        bean.setClassDesc("用户");
+//        bean.setImportList(Arrays.asList("com.itgo.annotation.BeanField","com.itgo.bean.BaseBean"));
+//        bean.setGenPath("E:\\project\\case\\src\\main\\java\\test\\");
+//        codeBean.setBeanMeta(bean);
+//        codeBean.start("shop_user");
+
+
+//        String url = "http://localhost:8088/test/t";
+//        Map<String,Object> params = new HashMap<>();
+//        params.put("userName","白艳龙");
+//        params.put("token","he");
+//        String ssl = HttpUtil.get(url, params, 1000, 1000);
+//        System.out.println(ssl);
+
+//        PrintWriter out = new PrintWriter("e:/test.txt","UTF-8");
+//        out.println("测试文本2\r\n");
+//        out.flush();
+//        InputStreamReader inputStreamReader = new InputStreamReader(System.in, StandardCharsets.UTF_8);
+//        int read = inputStreamReader.read();
+//        System.out.println((char)read);
+//
+//        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream("e:/zip.zip"));
+//        ZipEntry entry = null;
+//        while ((entry = zipInputStream.getNextEntry()) != null){
+//            InputStream inputStream =  zipInputStream.getInputStream(entry);
+//        }
+
+//        ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream("e:/aa.zip"));
+//        outputStream.putNextEntry(new ZipEntry("e:/ceshi.txt"));
+//        outputStream.closeEntry();
+//        outputStream.close();
+
+        YmlUtils ymlUtils = YmlUtils.getInstance();
+        System.out.println(ymlUtils.getProperty("bean.name"));
+        System.out.println(ymlUtils.getProperty("bean.name2"));
     }
+
+
+    /**
+     * 获取权健
+     *
+     * @param params
+     * @param appKey
+     * @return
+     */
+    public String getReqSign(Map<String, String> params, String appKey) {
+        StringBuffer url = new StringBuffer("");
+        Set<String> keySet = params.keySet();
+        for (String key : keySet) {
+            String value = params.get(key);
+            if (value != null && !"".equals(value)) {
+                url.append(key);
+                url.append("=");
+                url.append(URLEncoder.encode(value));
+                url.append("&");
+            }
+        }
+        url.append("app_key=").append(appKey);
+        String newUrl = url.toString();
+        newUrl = md5AndUpperCase(newUrl);
+        return newUrl;
+    }
+
+    /**
+     * MD5和转大写
+     *
+     * @param source
+     * @return
+     */
+    public String md5AndUpperCase(String source) {
+        //确定计算方法
+        MessageDigest md5 = null;
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+            BASE64Encoder base64en = new BASE64Encoder();
+            //加密后的字符串
+            String newstr = base64en.encode(md5.digest(source.getBytes("utf-8")));
+            newstr = newstr.toUpperCase();
+            return newstr;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

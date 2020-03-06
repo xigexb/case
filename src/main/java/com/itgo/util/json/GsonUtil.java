@@ -110,15 +110,15 @@ public class GsonUtil {
      * @param <T>
      * @return
      */
-    public static <T> List<Class<T>> gsonToList(String input, Class<T> cls) {
+    public static <T> List<T> gsonToList(String input, Class<T> cls) {
         if(input == null || "".equals(input.trim())){
             return null;
         }
-        List<Class<T>> list = null;
+        List<T> list = null;
         try {
             list = new ArrayList();
             Gson gson = new Gson();
-            list = gson.fromJson(input, new TypeToken<Class<T>>() {
+            list = gson.fromJson(input, new TypeToken<T>() {
             }.getType());
         } catch (Exception e) {
         }
